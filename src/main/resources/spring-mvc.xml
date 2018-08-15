@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--指明controller所在包，并扫描其中的注解-->
+    <context:component-scan base-package="com.offcn.controller"/>
+    <mvc:annotation-driven/>
+    <bean id="resourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!-- 配置了、springmvc不处理静态资源 -->
+    <mvc:default-servlet-handler/>
+    <!-- 配置拦截器 -->
+<mvc:interceptors>
+<!-- 第一个拦截器：身份认证拦截器 -->
+   <mvc:interceptor>
+     <!-- 设置拦截的地址 -->
+     <mvc:mapping path="/**"/>
+     <!-- 具体处理的拦截器类 -->
+     <bean class="com.offcn.filter.LoginInterceptor"/>
+   </mvc:interceptor>
+   <!-- 第二个拦截器：授权拦截器 -->
+   <mvc:interceptor>
+     <mvc:mapping path="/**"/>
+     <bean class="com.offcn.filter.PermissionInterceptor"/>
+   </mvc:interceptor>
+</mvc:interceptors>
+</beans>
